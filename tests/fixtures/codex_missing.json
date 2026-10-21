@@ -1,0 +1,1 @@
+{"result": {"rateLimits": {"claude": {"session": {"usedPercent": 1}, "weekly": {"usedPercent": 59}}, "codex": {"usageMetadata": {"failureKind": "missing-credentials"}}}}}

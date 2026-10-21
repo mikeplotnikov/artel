@@ -1,0 +1,25 @@
+{
+  "result": {
+    "rateLimits": {
+      "claude": {
+        "session": {
+          "usedPercent": 1
+        },
+        "weekly": {
+          "usedPercent": 59
+        },
+        "fableWeekly": {
+          "usedPercent": 50
+        }
+      },
+      "codex": {
+        "weekly": {
+          "usedPercent": 90
+        },
+        "rateLimitResetCredits": {
+          "availableCount": 3
+        }
+      }
+    }
+  }
+}

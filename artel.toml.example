@@ -1,0 +1,49 @@
+# ~/.artel/artel.toml — one file per user (private instance). The role → model matrix is resolved from it
+# by skills/artel/scripts/matrix.py against the defaults in skills/artel/references/roles.toml.
+
+orchestrator = "orca"            # orca | none
+vcs_host = "github"              # github (supported) | other (contract only)
+calibrated = false               # set true after the first calibration (core §12)
+unconfirmed_execution = false    # true only after `artel doctor` proves layers 1–2 (contract G2)
+
+[owner]
+name = "Your Name"
+github_login = "your-login"
+agent_github_login = ""          # machine account for agents (docs/adapters/github.md); empty = agents act as you
+agent_gh_config_dir = "~/.config/gh-artel"
+languages = { artefacts = "en", human_docs = ["en"] }
+
+# Families drive reviewer independence (core §2): a reviewer comes from a family other than the author's.
+# Model classes: top (product vision / specs), flagship (coordination, architecture, security review),
+# mid (implementation, most reviews), cheap (mechanical work). Use the ids your harness accepts.
+[[providers]]
+id = "anthropic"
+family = "anthropic"
+access = "subscription"          # subscription | api
+harness = "claude-code"
+models = { top = "claude-fable-5-1", flagship = "claude-opus-5-5", mid = "claude-sonnet-5-5" }
+
+[[providers]]
+id = "openai"
+family = "openai"
+access = "subscription"
+harness = "codex"
+models = { mid = "gpt-6.1-sol", cheap = "gpt-6-luna" }
+
+# A third family only after calibration (core §8), e.g.:
+# [[providers]]
+# id = "deepseek"
+# family = "deepseek"
+# access = "api"
+# harness = "omp"                # verified with omp 18.5.0 (docs/adapters/omp.md)
+# models = { mid = "deepseek-v4" }
+
+[defaults]
+release_cadence = "per_feature"  # per_feature | train_every_n_days
+flaky_quarantine_days = 14
+
+# Per-role overrides from calibration replace the default candidate list, e.g.:
+# [roles.reviewer_tests]
+# t01 = ["openai.mid@xhigh", "anthropic.mid@high"]
+
+# Per-project settings live in each repository: .artel/project.toml (written by artel-init).

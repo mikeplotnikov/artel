@@ -1,0 +1,119 @@
+# Artel default role matrix, schema 2 (core §8). Resolved by scripts/matrix.py — never chosen from memory.
+#
+# A candidate is "<family>.<class>@<effort>"; classes map to concrete model ids in the user's
+# ~/.artel/artel.toml ([[providers]].models). Each role has an ordered chain per tier group (t01 = T0–T1,
+# t23 = T2–T3). `matrix.py pick` walks the chain and takes the first candidate that is:
+#   - in a family the user has, and whose family is not over the limit threshold (Orca rateLimits);
+#   - not banned for the role;
+#   - for review roles (review = true): never the author's own model; a family other than the author's
+#     is preferred, then another model of the same family ("independence weakened", core §2.2),
+#     then a reserve family other than the author's. Reserve families are always tried last.
+# The user's [roles] table in ~/.artel/artel.toml replaces a role's chain (calibration, core §12).
+
+schema = 2
+
+[policy]
+# % of a family's usage window at or above which no NEW work starts for that family (owner decision D2,
+# 2026-10-06). A window at 100% always means "exhausted" — work in flight is handed over.
+new_work_threshold = 90
+reserve_families = ["deepseek"]
+
+[roles.coordinator]
+t01 = ["anthropic.flagship@medium", "openai.mid@high"]
+t23 = ["anthropic.flagship@high", "openai.mid@high"]
+
+[roles.spec_writer]
+t01 = ["anthropic.top@high", "anthropic.flagship@high", "openai.mid@high"]
+t23 = ["anthropic.top@high", "anthropic.flagship@high", "openai.mid@high"]
+
+[roles.spec_validator_adequacy]
+review = true
+banned = ["openai.cheap"]
+t01 = ["anthropic.flagship@high", "openai.mid@xhigh", "anthropic.mid@high", "deepseek.mid@high"]
+t23 = ["anthropic.flagship@high", "openai.mid@xhigh", "anthropic.mid@high", "deepseek.mid@high"]
+
+[roles.spec_validator_quality]
+review = true
+banned = ["openai.cheap"]
+t01 = ["anthropic.mid@medium", "openai.mid@medium", "anthropic.flagship@medium", "deepseek.mid@high"]
+t23 = ["anthropic.mid@high", "openai.mid@high", "anthropic.flagship@high", "deepseek.mid@high"]
+
+[roles.spec_validator_facts]
+review = true
+banned = ["openai.cheap"]
+t01 = ["openai.mid@medium", "anthropic.mid@medium", "anthropic.flagship@medium", "deepseek.mid@high"]
+t23 = ["openai.mid@medium", "anthropic.mid@high", "anthropic.flagship@high", "deepseek.mid@high"]
+
+[roles.architect]
+t01 = ["anthropic.flagship@medium", "openai.mid@xhigh"]
+t23 = ["anthropic.flagship@high", "openai.mid@xhigh"]
+
+[roles.code_explorer]
+t01 = ["anthropic.mid@medium", "openai.mid@medium"]
+t23 = ["openai.mid@medium", "anthropic.mid@medium"]
+
+[roles.implementer_backend]
+t01 = ["openai.mid@medium", "anthropic.mid@xhigh", "anthropic.flagship@high"]
+t23 = ["openai.mid@xhigh", "anthropic.mid@xhigh", "anthropic.flagship@high"]
+
+[roles.implementer_frontend]
+t01 = ["anthropic.mid@high", "anthropic.flagship@high", "openai.mid@high"]
+t23 = ["anthropic.mid@xhigh", "anthropic.flagship@high", "openai.mid@high"]
+
+[roles.acceptance_test_author]
+t01 = ["anthropic.flagship@medium", "openai.mid@medium", "anthropic.mid@high"]
+t23 = ["anthropic.flagship@high", "openai.mid@high", "anthropic.mid@high"]
+
+[roles.reviewer_code]
+review = true
+banned = ["openai.cheap"]          # calibration 2026-10-03: Luna 1/7 on test review
+t01 = ["openai.mid@medium", "anthropic.mid@high", "anthropic.flagship@high", "deepseek.mid@high"]
+t23 = ["openai.mid@high", "anthropic.mid@high", "anthropic.flagship@high", "deepseek.mid@high"]
+
+[roles.reviewer_tests]
+review = true
+banned = ["openai.cheap"]
+t01 = ["openai.mid@xhigh", "anthropic.mid@high", "anthropic.flagship@high", "deepseek.mid@high"]
+t23 = ["openai.mid@xhigh", "anthropic.mid@high", "anthropic.flagship@high", "deepseek.mid@high"]
+
+[roles.reviewer_security]
+review = true
+banned = ["openai.cheap"]
+t01 = ["anthropic.flagship@high", "openai.mid@xhigh", "anthropic.mid@high", "deepseek.mid@high"]
+t23 = ["anthropic.flagship@high", "openai.mid@xhigh", "anthropic.mid@high", "deepseek.mid@high"]
+
+[roles.reviewer_infrastructure]
+review = true
+banned = ["openai.cheap"]
+t01 = ["anthropic.flagship@high", "openai.mid@high", "anthropic.mid@high", "deepseek.mid@high"]
+t23 = ["anthropic.flagship@high", "openai.mid@xhigh", "anthropic.mid@high", "deepseek.mid@high"]
+
+[roles.reviewer_layout]
+review = true
+banned = ["openai.cheap"]
+t01 = ["anthropic.mid@high", "openai.mid@medium", "anthropic.flagship@high", "deepseek.mid@high"]
+t23 = ["anthropic.mid@high", "openai.mid@high", "anthropic.flagship@high", "deepseek.mid@high"]
+
+[roles.reviewer_docs]
+review = true
+banned = ["openai.cheap"]
+t01 = ["anthropic.mid@medium", "openai.mid@medium", "anthropic.flagship@medium", "deepseek.mid@high"]
+t23 = ["anthropic.mid@high", "openai.mid@high", "anthropic.flagship@high", "deepseek.mid@high"]
+
+[roles.reviewer_wave2]
+review = true
+banned = ["openai.cheap"]
+t01 = ["openai.mid@medium", "anthropic.mid@medium", "anthropic.flagship@medium", "deepseek.mid@high"]
+t23 = ["openai.mid@high", "anthropic.mid@high", "anthropic.flagship@high", "deepseek.mid@high"]
+
+[roles.debugger]
+t01 = ["anthropic.mid@xhigh", "openai.mid@xhigh", "anthropic.flagship@high"]
+t23 = ["anthropic.mid@xhigh", "anthropic.flagship@high", "openai.mid@xhigh"]
+
+[roles.docs_writer]
+t01 = ["anthropic.mid@medium", "openai.cheap@medium"]
+t23 = ["anthropic.mid@medium", "openai.cheap@medium"]
+
+[roles.mechanical]
+t01 = ["openai.cheap@low", "anthropic.mid@low"]
+t23 = ["openai.cheap@medium", "anthropic.mid@medium"]

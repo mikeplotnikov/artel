@@ -1,0 +1,12 @@
+.env
+*.key
+credentials.json
+secrets/
+.DS_Store
+__pycache__/
+
+# Licensed texts (copyright, no redistribution): kept locally, provenance in sources-*.tsv
+evidence/standards/licensed/
+
+# Generated diagram viewers (rebuild from *.workflow.json with archify finalize)
+work/plan/diagram/*.html
